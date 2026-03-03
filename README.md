@@ -20,7 +20,7 @@ coffee-shop-api/
 ├── routes/
 │   └── coffee.routes.js        # Express Router definitions
 ├── public/
-│   └── index.html              # Live menu static page
+│   └── index.txt              # Live menu static page
 ├── .env                        # Environment variables (DO NOT COMMIT)
 ├── .env.example                # Safe template to share
 ├── .gitignore                  # Excludes .env and node_modules
@@ -36,7 +36,7 @@ coffee-shop-api/
 
 ```bash
 git clone <your-repo-url>
-cd coffee-shop-api
+cd Express_task_1
 ```
 
 ### 2. Install dependencies
