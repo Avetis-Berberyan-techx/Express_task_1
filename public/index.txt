@@ -1,0 +1,25 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Live Coffee Menu</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <h1>Live Coffee Menu</h1>
+    <ul id="menu"></ul>
+
+    <script>
+      fetch("/menu")
+        .then((res) => res.json())
+        .then((data) => {
+          const menuList = document.getElementById("menu");
+
+          data.forEach((coffee) => {
+            const li = document.createElement("li");
+            li.textContent = `${coffee.name} - ${coffee.price}`;
+            menuList.appendChild(li);
+          });
+        });
+    </script>
+  </body>
+</html>
