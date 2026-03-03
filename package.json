@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/Avetis-Berberyan-techx/Express_task_1#readme",
   "dependencies": {
+    "dotenv": "^17.3.1",
     "express": "^5.2.1",
     "nodemon": "^3.1.14"
   }

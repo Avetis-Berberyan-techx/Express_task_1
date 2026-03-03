@@ -1,88 +1,32 @@
 const express = require("express");
+const path = require("path");
+
+const coffeeRouter = require("./routes/coffee.router");
+const logger = require("./middleware/logger");
+const errorHandler = require("./middleware/ErrorHandler");
+require("dotenv").config();
 
 const app = express();
-const PORT = 3000;
-
-let menu = [
-  { id: 1, name: "Espresso", price: 3.0 },
-  { id: 2, name: "Latte", price: 4.5 },
-];
+const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
+app.use(express.static("public"));
 
-app.get("/menu", (req, res) => {
-  res.status(200).json(menu);
+app.use(logger);
+
+app.get("/coffee_list", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.txt"));
 });
 
-app.post("/menu", (req, res) => {
-  const { name, price } = req.body;
+app.use("/menu", coffeeRouter);
 
-  if (!name) {
-    return res.status(400).send("Name is required");
-  }
-  if (!price) {
-    return res.status(400).send("Price is required");
-  }
-
-  const newCoffee = {
-    id: menu.length ? Math.max(...menu.map((c) => c.id)) + 1 : 1,
-    name,
-    price,
-  };
-
-  menu.push(newCoffee);
-  res.status(201).json(newCoffee);
+app.use((req, res, next) => {
+  const error = new Error(`Route ${req.originalUrl} not found`);
+  error.status = 404;
+  next(error);
 });
 
-app.put("/menu/:id", (req, res) => {
-  const id = parseInt(req.params.id);
-  const { name, price } = req.body;
-  const index = menu.findIndex((c) => c.id === id);
-
-  if (index === -1) {
-    return res.status(404).send("Coffee not found");
-  }
-
-  if (!name || !price) {
-    return res.status(400).send("Name and price are required");
-  }
-
-  menu[index] = { id, name, price };
-  res.status(200).json(menu[index]);
-});
-
-app.patch("/menu/:id", (req, res) => {
-  const id = parseInt(req.params.id);
-  const { price } = req.body;
-  const coffee = menu.find((c) => c.id === id);
-
-  if (!coffee) {
-    return res.status(404).send("Coffee not found");
-  }
-
-  if (!price) {
-    return res.status(400).send("Price is required");
-  }
-
-  coffee.price = price;
-  res.status(200).json(coffee);
-});
-
-app.delete("/menu/:id", (req, res) => {
-  const id = parseInt(req.params.id);
-  const index = menu.findIndex((c) => c.id === id);
-
-  if (index === -1) {
-    return res.status(404).send("Coffee not found");
-  }
-
-  const deleted = menu.splice(index, 1);
-  res.status(200).json(deleted[0]);
-});
-
-app.use((req, res) => {
-  res.status(404).send("Not Found");
-});
+app.use(errorHandler);
 
 app.listen(PORT, () => {
   console.log(`API is running on http://localhost:${PORT}`);
